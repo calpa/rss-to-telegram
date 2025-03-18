@@ -33,7 +33,7 @@ export async function sendToTelegram(botToken: string, channelId: string, messag
 export function formatRssItemForTelegram(item: { title: string; link: string; contentSnippet?: string }): string {
 	const snippet = item.contentSnippet ? `\n\n${item.contentSnippet.substring(0, 150)}${item.contentSnippet.length > 150 ? '...' : ''}` : '';
 
-	return `${escapeHtml(item.title)}${snippet}\n\nRead full article\n${item.link}`;
+	return `${escapeHtml(item.title)}${snippet}\n${item.link}`;
 }
 
 // HTML special character escaping
