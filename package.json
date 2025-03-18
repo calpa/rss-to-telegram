@@ -15,5 +15,10 @@
 		"typescript": "^5.5.2",
 		"vitest": "~3.0.7",
 		"wrangler": "^4.1.0"
+	},
+	"dependencies": {
+		"hono": "^4.7.4",
+		"node-fetch": "^3.3.2",
+		"rss-parser": "^3.13.0"
 	}
 }
