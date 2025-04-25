@@ -7,6 +7,7 @@ export interface FeedItem {
   pubDate: string;
   content?: string;
   contentSnippet?: string;
+  headerImage?: string;
 }
 
 // Use fetch API to get data
@@ -59,7 +60,8 @@ export async function getLatestRssItems(feedUrl: string): Promise<FeedItem[]> {
         link: item.link || '',
         pubDate: item.pubDate || new Date().toISOString(),
         content: item.content,
-        contentSnippet: item.contentSnippet
+        contentSnippet: item.contentSnippet,
+        headerImage: item.headerImage,
       }))
       .filter(item => {
         const pubDate = new Date(item.pubDate);
