@@ -43,17 +43,21 @@ app.get('/check-updates', async (c) => {
  */
 async function checkAndSendUpdates(env: Env): Promise<{ sent: number, error: string | null }> {
   const storage = new KVStorage(env.RSS_STORAGE);
-  const processedItems = await storage.getProcessedItems();
-  
   // Get the latest RSS items (already filtered for the last 24 hours)
   const latestItems = await getLatestRssItems(env.RSS_FEED_URL);
   
-  // Filter out items that haven't been processed yet
-  const newItems = latestItems.filter(
-    (item) => item.link && !processedItems.includes(item.link)
-  );
-  
-  if (newItems.length === 0) {
+  let pendingItems = [];
+
+  for (const item of latestItems) {
+    const isItemProcessed = await storage.checkIfProcessed(item.link);
+
+    if (!isItemProcessed) {
+      pendingItems.push(item);
+    }
+  }
+
+  if (pendingItems.length === 0) {
+    console.log('All items have been processed');
     return { sent: 0, error: null };
   }
   
@@ -61,7 +65,7 @@ async function checkAndSendUpdates(env: Env): Promise<{ sent: number, error: str
   let error = null;
   
   // Send new items to Telegram
-  for (const item of newItems) {
+  for (const item of pendingItems) {
     try {
       const success = await sendToTelegram(
         env.TELEGRAM_BOT_TOKEN,
@@ -79,6 +83,8 @@ async function checkAndSendUpdates(env: Env): Promise<{ sent: number, error: str
       // Continue processing other items
     }
   }
+
+  console.log(`Sent ${sent} new items to Telegram`);
   
   return { sent, error };
 }

@@ -1,24 +1,29 @@
-export interface Storage {
-	getProcessedItems(): Promise<string[]>;
-	markItemAsProcessed(itemUrl: string): Promise<void>;
-}
-
-export class KVStorage implements Storage {
+/**
+ * KVStorage class for managing processed items in a KVNamespace.
+ */
+export class KVStorage {
+	/**
+	 * Constructs a KVStorage instance.
+	 * @param {KVNamespace} kvNamespace - The KVNamespace to use for storage.
+	 */
 	constructor(private kvNamespace: KVNamespace) {}
 
-	async getProcessedItems(): Promise<string[]> {
-		const items = await this.kvNamespace.get('processed_items');
-		return items ? JSON.parse(items) : [];
+	/**
+	 * Checks if an item has been processed.
+	 * @param {string} itemUrl - The URL of the item to check.
+	 * @returns {Promise<boolean>} - A promise that resolves to true if the item is processed, false otherwise.
+	 */
+	async checkIfProcessed(itemUrl: string): Promise<boolean> {
+		const processed = await this.kvNamespace.get(itemUrl);
+		return processed === '1';
 	}
 
+	/**
+	 * Marks an item as processed.
+	 * @param {string} itemUrl - The URL of the item to mark as processed.
+	 * @returns {Promise<void>} - A promise that resolves when the item is marked as processed.
+	 */
 	async markItemAsProcessed(itemUrl: string): Promise<void> {
-		const items = await this.getProcessedItems();
-
-		// If the item already exists, no need to add it again
-		if (items.includes(itemUrl)) return;
-
-		// Add new items and keep only the most recent 100 items (to prevent storage from getting too large)
-		const updatedItems = [itemUrl, ...items].slice(0, 100);
-		await this.kvNamespace.put('processed_items', JSON.stringify(updatedItems));
+		return this.kvNamespace.put(itemUrl, '1');
 	}
 }

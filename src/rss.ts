@@ -33,16 +33,22 @@ async function fetchUrl(url: string): Promise<string> {
   }
 }
 
+type CustomFeed = {};
+type CustomItem = { headerImage: string };
+
 // Get the latest RSS items
 export async function getLatestRssItems(feedUrl: string): Promise<FeedItem[]> {
   console.log('Getting RSS feed:', feedUrl);
 
-  const parser = new Parser();
+  const parser = new Parser<CustomFeed, CustomItem>({
+    customFields: {
+      item: ['headerImage']
+    }
+  });
   
   try {
     // Use fetch API to get RSS content
     const xmlContent = await fetchUrl(feedUrl);
-    
     // Use rss-parser to parse XML content
     const feed = await parser.parseString(xmlContent);
     
@@ -51,11 +57,12 @@ export async function getLatestRssItems(feedUrl: string): Promise<FeedItem[]> {
     const twentyFourHoursAgo = new Date(now);
     twentyFourHoursAgo.setHours(now.getHours() - 24);
     
-    console.log(`Filtering items within 24 hours, current time: ${now.toISOString()}, 24 hours ago: ${twentyFourHoursAgo.toISOString()}`);
+    console.log(`Filtering items within 24 hours, current time: ${now.toISOString()}`);
     
     // Sort by publication date, newest first, and only keep items within 24 hours
     const sortedItems = feed.items
       .map(item => ({
+        ...item,
         title: item.title || 'No Title',
         link: item.link || '',
         pubDate: item.pubDate || new Date().toISOString(),
