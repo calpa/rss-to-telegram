@@ -7,6 +7,8 @@
 
 A Cloudflare Worker service that automatically fetches RSS feed updates and sends them to a Telegram channel.
 
+[繁體中文說明](./README.zh-TW.md)
+
 ## ✨ Features
 
 - 🔄 Automatically checks RSS feeds for new content
@@ -82,6 +84,29 @@ npm run deploy
 4. 🔍 It checks which items have already been sent to avoid duplicates
 5. 📝 New items are formatted and sent to the Telegram channel
 6. ✅ Successfully sent items are marked as processed in KV storage
+
+## 📚 In-Depth Technical Article
+
+For a detailed technical explanation of the architecture, code, and design decisions behind this project, check out the full blog post:
+
+[Building an RSS Subscription Push System with Cloudflare Worker, Hono, and Telegram Bot API](https://calpa.me/blog/build-rss-subscription-push-system-with-cloudflare-worker-hono-telegram-bot-api/)
+
+This article covers:
+
+- Serverless architecture using Cloudflare Workers
+- Using Hono for lightweight edge routing
+- Integrating with the Telegram Bot API
+- Secure environment variable management
+- Persistent storage with Cloudflare KV
+- Advanced features and troubleshooting tips
+
+Whether you're looking to learn more or want to adapt this solution for your own use, the blog post provides step-by-step guidance and practical insights.
+
+## 🤝 Contributing
+
+Pull Requests (PRs) are very welcome! If you have ideas, improvements, or bug fixes, please open a PR. See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+---
 
 ## 📄 License
 
