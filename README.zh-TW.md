@@ -25,7 +25,7 @@
 1. 複製本專案
 2. 安裝依賴：
    ```
-   npm install
+   yarn
    ```
 3. 於 Cloudflare Dashboard 或用 wrangler secrets 設定環境變數：
    ```

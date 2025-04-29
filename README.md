@@ -30,7 +30,7 @@ A Cloudflare Worker service that automatically fetches RSS feed updates and send
 1. Clone this repository
 2. Install dependencies:
    ```
-   npm install
+   yarn
    ```
 3. Configure your environment variables in Cloudflare Dashboard or using wrangler secrets:
    ```
@@ -50,7 +50,7 @@ A Cloudflare Worker service that automatically fetches RSS feed updates and send
 Run the service locally for development:
 
 ```
-npm run dev
+yarn dev
 ```
 
 This will start a local development server with the Wrangler CLI.
@@ -60,7 +60,7 @@ This will start a local development server with the Wrangler CLI.
 Run the test suite:
 
 ```
-npm test
+yarn test
 ```
 
 ## 🚢 Deployment
@@ -68,7 +68,7 @@ npm test
 Deploy to Cloudflare Workers:
 
 ```
-npm run deploy
+yarn deploy
 ```
 
 ## 🔌 API Endpoints
