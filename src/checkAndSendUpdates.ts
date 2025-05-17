@@ -42,14 +42,16 @@ export async function checkAndSendUpdates(env: CloudflareBindings): Promise<{ se
        
         console.log('Sending to Discord Miko', item.title);
         
-        await env.DISCORD_MIKO_QUEUE.send(QueueHandlerMessageSchema.parse({
-          token: env.DISCORD_MIKO_KEY,
-          title: item.title,
-          url: item.link,
-          description: '',
-          timestamp: item.pubDate,
-          thumbnailURL: ''
-        }));
+        if (env.DISCORD_MIKO_KEY && env.DISCORD_MIKO_QUEUE) {
+          await env.DISCORD_MIKO_QUEUE.send(QueueHandlerMessageSchema.parse({
+            token: env.DISCORD_MIKO_KEY,
+            title: item.title,
+            url: item.link,
+            description: '',
+            timestamp: item.pubDate,
+            thumbnailURL: ''
+          }));
+        }
 
         if (success) {
           await storage.markItemAsProcessed(item.link);
