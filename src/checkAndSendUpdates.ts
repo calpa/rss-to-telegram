@@ -1,14 +1,14 @@
-import { Bindings } from "./types/Bindings";
 import { getLatestRssItems } from "./rss";
 import { KVStorage } from "./storage";
 import { sendToTelegram } from "./telegram";
+import { QueueHandlerMessageSchema } from "./types/QueueHandlerMessageSchema";
 
 /**
  * Main logic for checking updates and sending to Telegram
  * @param {Bindings} env - Environment variables
  * @returns {Promise<{sent: number, error: string | null}>} - Number of sent items and any error
  */
-export async function checkAndSendUpdates(env: Bindings): Promise<{ sent: number, error: string | null }> {
+export async function checkAndSendUpdates(env: CloudflareBindings): Promise<{ sent: number, error: string | null }> {
     const storage = new KVStorage(env.RSS_STORAGE);
     // Get the latest RSS items (already filtered for the last 24 hours)
     const latestItems = await getLatestRssItems(env.RSS_FEED_URL);
@@ -39,7 +39,18 @@ export async function checkAndSendUpdates(env: Bindings): Promise<{ sent: number
           env.TELEGRAM_CHANNEL_ID,
           item,
         );
+       
+        console.log('Sending to Discord Miko', item.title);
         
+        await env.DISCORD_MIKO_QUEUE.send(QueueHandlerMessageSchema.parse({
+          token: env.DISCORD_MIKO_KEY,
+          title: item.title,
+          url: item.link,
+          description: '',
+          timestamp: item.pubDate,
+          thumbnailURL: ''
+        }));
+
         if (success) {
           await storage.markItemAsProcessed(item.link);
           sent++;

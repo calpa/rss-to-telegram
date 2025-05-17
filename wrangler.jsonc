@@ -3,7 +3,7 @@
     "name": "rss-to-telegram",
     "main": "src/index.ts",
     "compatibility_flags": [ "nodejs_compat" ],
-    "compatibility_date": "2024-09-23",
+    "compatibility_date": "2025-05-17",
     "triggers": {
         "crons": ["0 * * * *"]
     },

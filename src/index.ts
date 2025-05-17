@@ -1,4 +1,4 @@
-import { Hono } from 'hono';
+import { ExecutionContext, Hono } from 'hono';
 import { checkAndSendUpdates } from './checkAndSendUpdates';
 import { Bindings } from './types/Bindings';
 
