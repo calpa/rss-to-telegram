@@ -20,5 +20,9 @@
             "binding": "RSS_STORAGE",
             "id": "18e000c9064e46188c116a42adfb34d3"
         }
-    ]
+    ],
+    "observability": {
+        "enabled": true,
+        "head_sampling_rate": 1
+    }
 }
