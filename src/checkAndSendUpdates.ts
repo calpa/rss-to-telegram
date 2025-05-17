@@ -1,7 +1,10 @@
+import dayjs from "dayjs";
+import { convertHeaderImage } from "./parseHeaderImage";
 import { getLatestRssItems } from "./rss";
 import { KVStorage } from "./storage";
 import { sendToTelegram } from "./telegram";
 import { QueueHandlerMessageSchema } from "./types/QueueHandlerMessageSchema";
+import { getItemSnippet } from "./formatRssItemForTelegram";
 
 /**
  * Main logic for checking updates and sending to Telegram
@@ -34,12 +37,8 @@ export async function checkAndSendUpdates(env: CloudflareBindings): Promise<{ se
     // Send new items to Telegram
     for (const item of pendingItems) {
       try {
-        const success = await sendToTelegram(
-          env.TELEGRAM_BOT_TOKEN,
-          env.TELEGRAM_CHANNEL_ID,
-          item,
-        );
-       
+        console.log(item);
+
         console.log('Sending to Discord Miko', item.title);
         
         if (env.DISCORD_MIKO_KEY && env.DISCORD_MIKO_QUEUE) {
@@ -47,11 +46,17 @@ export async function checkAndSendUpdates(env: CloudflareBindings): Promise<{ se
             token: env.DISCORD_MIKO_KEY,
             title: item.title,
             url: item.link,
-            description: '',
-            timestamp: item.pubDate,
-            thumbnailURL: ''
+            description: getItemSnippet(item),
+            timestamp: dayjs(item.pubDate).toISOString(),
+            thumbnailURL: convertHeaderImage(item.headerImage || 'https://assets.calpa.me/telegram/public/pfp.png')
           }));
         }
+
+        const success = await sendToTelegram(
+          env.TELEGRAM_BOT_TOKEN,
+          env.TELEGRAM_CHANNEL_ID,
+          item,
+        );
 
         if (success) {
           await storage.markItemAsProcessed(item.link);
