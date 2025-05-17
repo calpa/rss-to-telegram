@@ -1,8 +1,7 @@
 import { ExecutionContext, Hono } from 'hono';
 import { checkAndSendUpdates } from './checkAndSendUpdates';
-import { Bindings } from './types/Bindings';
 
-const app = new Hono<{Bindings: Bindings}>();
+const app = new Hono<{Bindings: CloudflareBindings}>();
 
 /**
  * Health check route
@@ -33,10 +32,10 @@ export default {
   /**
    * Scheduled task handler function
    * @param {ScheduledEvent} event - Scheduled event
-   * @param {Bindings} env - Environment variables
+   * @param {CloudflareBindings} env - Environment variables
    * @param {ExecutionContext} ctx - Execution context
    */
-  async scheduled(event: ScheduledEvent, env: Bindings, ctx: ExecutionContext) {
+  async scheduled(event: ScheduledEvent, env: CloudflareBindings, ctx: ExecutionContext) {
     ctx.waitUntil(checkAndSendUpdates(env));
   },
 };
