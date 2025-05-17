@@ -1,11 +1,11 @@
-# 📰 RSS to Telegram 🚀
+# 📰 RSS to Telegram & Discord 🚀
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Cloudflare Workers](https://img.shields.io/badge/Cloudflare-Workers-orange.svg)](https://workers.cloudflare.com/)
 [![Telegram Bot API](https://img.shields.io/badge/Telegram-Bot%20API-blue.svg)](https://core.telegram.org/bots/api)
 [![TypeScript](https://img.shields.io/badge/TypeScript-4.9.5-blue.svg)](https://www.typescriptlang.org/)
 
-A Cloudflare Worker service that automatically fetches RSS feed updates and sends them to a Telegram channel.
+A Cloudflare Worker service that automatically fetches RSS feed updates and sends them to both a Telegram channel and Discord via Cloudflare Queues.
 
 [繁體中文說明](./README.zh-TW.md)
 
@@ -14,6 +14,7 @@ A Cloudflare Worker service that automatically fetches RSS feed updates and send
 - 🔄 Automatically checks RSS feeds for new content
 - ⏱️ Filters items published within the last 24 hours
 - 📲 Sends new articles to a specified Telegram channel
+- 💬 Forwards updates to Discord via Cloudflare Queues
 - 🚫 Prevents duplicate posts by tracking previously sent items
 - ⏰ Scheduled to run hourly via Cloudflare Workers cron triggers
 - 🔘 Provides a manual update endpoint for on-demand checks
@@ -37,6 +38,21 @@ A Cloudflare Worker service that automatically fetches RSS feed updates and send
    wrangler secret put RSS_FEED_URL
    wrangler secret put TELEGRAM_BOT_TOKEN
    wrangler secret put TELEGRAM_CHANNEL_ID
+   wrangler secret put DISCORD_MIKO_KEY
+   ```
+
+4. Create a Cloudflare Queue and bind it to your worker in `wrangler.jsonc`:
+   ```json
+   {
+     "queues": {
+       "producers": [
+         {
+           "queue": "discord-miko-queue",
+           "binding": "DISCORD_MIKO_QUEUE"
+         }
+       ]
+     }
+   }
    ```
 
 ## 🔐 Environment Variables
@@ -44,6 +60,8 @@ A Cloudflare Worker service that automatically fetches RSS feed updates and send
 - `RSS_FEED_URL`: The URL of the RSS feed you want to monitor
 - `TELEGRAM_BOT_TOKEN`: Your Telegram bot token
 - `TELEGRAM_CHANNEL_ID`: Your Telegram channel ID (including the @ symbol for public channels)
+- `DISCORD_MIKO_KEY`: Authentication key for Discord Miko queue
+- `DISCORD_MIKO_QUEUE`: Cloudflare Queue for sending messages to Discord (configured in Cloudflare Dashboard)
 
 ## 💻 Development
 
@@ -83,7 +101,8 @@ yarn deploy
 3. 🗓️ It filters out items that were published more than 24 hours ago
 4. 🔍 It checks which items have already been sent to avoid duplicates
 5. 📝 New items are formatted and sent to the Telegram channel
-6. ✅ Successfully sent items are marked as processed in KV storage
+6. 💬 Items are also queued for Discord via Cloudflare Queues
+7. ✅ Successfully processed items are marked as stored in KV storage
 
 ## 📚 In-Depth Technical Article
 
