@@ -23,6 +23,7 @@ const trySendPhoto = async (
 			chat_id: channelId,
 			photo: convertHeaderImage(item.headerImage || '', filetype),
 			caption: formatRssItemForTelegram(item),
+			parse_mode: 'Markdown',
 		};
 
 		const response = await fetch(url, {
