@@ -22,5 +22,5 @@ export function formatRssItemForTelegram(item: FeedItem): string {
   const title = escapeHtml(item.title);
   const snippet = getItemSnippet(item);
   const link = item.link;
-  return `<b>${title}</b>${snippet}\n${link}`;
+  return `${title}\n${snippet}\n${link}`;
 }
