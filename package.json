@@ -17,7 +17,7 @@
 	},
 	"dependencies": {
 		"dayjs": "^1.11.13",
-		"hono": "^4.7.4",
+		"hono": "^4.10.2",
 		"node-fetch": "^3.3.2",
 		"rss-parser": "^3.13.0"
 	}
